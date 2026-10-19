@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECO LAB | ECOGINI</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f8f3;
+      color: #183b2a;
+    }
+    header {
+      background: #176b45;
+      color: white;
+      padding: 22px 18px;
+    }
+    .wrap { max-width: 760px; margin: auto; }
+    header a { color: white; text-decoration: none; }
+    main { max-width: 760px; margin: 28px auto; padding: 0 16px 40px; }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px #173b2a12;
+    }
+    .tag {
+      display: inline-block;
+      background: #e0f3e5;
+      color: #176b45;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    h1 { margin-bottom: 8px; }
+    h2 { font-size: 21px; }
+    .muted { color: #607568; line-height: 1.6; }
+    .progress {
+      height: 9px;
+      background: #e3ece5;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    #bar { height: 100%; width: 0%; background: #28a36a; transition: width .2s; }
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 14px;
+      margin: 10px 0;
+      border: 1px solid #d5e3d8;
+      border-radius: 12px;
+      background: white;
+      color: #183b2a;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .option:hover { border-color: #28a36a; background: #f1faf3; }
+    .option:disabled { cursor: default; opacity: 1; }
+    .option.correct { border-color: #23854f; background: #e5f7e9; }
+    .option.wrong { border-color: #c8754b; background: #fff0e8; }
+    .primary, .secondary {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    .primary { background: #176b45; color: white; }
+    .secondary { background: #e3eee5; color: #176b45; }
+    #feedback { line-height: 1.6; margin-top: 14px; }
+    .hidden { display: none; }
+    footer { text-align: center; padding: 20px; color: #607568; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a href="index.html">← Kembali ke Beranda</a>
+      <h1>ECO LAB 🧪</h1>
+      <p>Belajar memeriksa informasi sebelum mempercayainya.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <span class="tag">LEARNING LAB</span>
+      <h2>Uji cara berpikirmu</h2>
+      <p class="muted">
+        Pelajari cara membedakan bukti yang kuat, sumber yang meragukan,
+        dan kesimpulan yang terlalu berlebihan.
+      </p>
+      <p><strong>Skor sesi:</strong> <span id="score">0</span> poin</p>
+      <p><strong>Progres:</strong> <span id="progress">0/5</span></p>
+      <div class="progress"><div id="bar"></div></div>
+    </section>
+
+    <section class="card" id="quiz">
+      <span class="tag" id="level">LEVEL 1</span>
+      <h2 id="question">Memuat pertanyaan...</h2>
+      <p class="muted" id="scenario"></p>
+      <div id="options"></div>
+      <p id="feedback" aria-live="polite"></p>
+      <button class="primary hidden" id="next">Pertanyaan Berikutnya →</button>
+    </section>
+
+    <section class="card hidden" id="result">
+      <span class="tag">SESI SELESAI</span>
+      <h2>Latihan selesai! 🎉</h2>
+      <p id="summary"></p>
+      <p class="muted">Ingat: informasi yang terdengar meyakinkan belum tentu didukung bukti yang cukup.</p>
+      <button class="primary" id="restart">Ulangi Latihan</button>
+    </section>
+
+    <section class="card">
+      <h2>Prinsip ECOGINI</h2>
+      <p class="muted">
+        1. Periksa asal sumber.<br>
+        2. Cocokkan bukti dengan klaim.<br>
+        3. Waspadai kesimpulan yang melampaui bukti.<br>
+        4. Akui jika informasi belum dapat dipastikan.
+      </p>
+    </section>
+  </main>
+
+  <footer>ECOGINI — Jangan cuma percaya. Periksa buktinya.</footer>
+
+  <script>
+    const cases = [
+      {
+        level: "LEVEL 1 · DASAR",
+        question: "Sebuah jawaban AI menyertakan tautan sumber. Apa langkah terbaik?",
+        scenario: "Simulasi: AI menjawab pertanyaan sejarah dan mencantumkan sebuah tautan.",
+        options: [
+          "Langsung percaya karena ada tautan",
+          "Buka sumber dan periksa apakah isinya mendukung klaim",
+          "Percaya jika jawaban AI ditulis dengan bahasa formal"
+        ],
+        correct: 1,
+        explanation: "Benar! Tautan saja tidak menjamin kebenaran. Isi sumber harus benar-benar mendukung klaim."
+      },
+      {
+        level: "LEVEL 2 · SUMBER",
+        question: "Sebuah unggahan menyebut data penelitian, tetapi tidak mencantumkan penulis atau dokumen asli. Apa sikap terbaik?",
+        scenario: "Simulasi: unggahan media sosial menyatakan bahwa 90% siswa mengalami masalah tertentu.",
+        options: [
+          "Anggap benar karena memakai angka",
+          "Sebarkan sambil menunggu klarifikasi",
+          "Cari penelitian asli dan periksa metode serta konteks datanya"
+        ],
+        correct: 2,
+        explanation: "Angka tidak otomatis menjadi bukti kuat. Cari sumber asli, metode, sampel, dan konteks penelitian."
+      },
+      {
+        level: "LEVEL 3 · KECOCOKAN",
+        question: "Sumber menyatakan bahwa sebagian siswa menyukai aplikasi belajar. AI menyimpulkan semua siswa pasti menyukainya. Apa masalahnya?",
+        scenario: "Simulasi: isi sumber hanya membahas sebagian siswa, tetapi kesimpulan AI berlaku untuk semua.",
+        options: [
+          "Kesimpulan AI terlalu luas dibandingkan bukti",
+          "Sumber pasti palsu",
+          "Tidak ada masalah selama kalimatnya lancar"
+        ],
+        correct: 0,
+        explanation: "Tepat! Kesimpulan umum tidak boleh ditarik dari bukti yang hanya mencakup sebagian kelompok."
+      },
+      {
+        level: "LEVEL 4 · KONFLIK BUKTI",
+        question: "Dua sumber yang tampak kredibel memberikan angka berbeda. Apa yang sebaiknya dilakukan?",
+        scenario: "Simulasi: dua laporan memakai tahun dan jumlah responden yang berbeda.",
+        options: [
+          "Pilih angka yang paling besar",
+          "Bandingkan tanggal, definisi, metode, dan populasi kedua sumber",
+          "Gabungkan kedua angka menjadi rata-rata tanpa pemeriksaan"
+        ],
+        correct: 1,
+        explanation: "Perbedaan angka bisa muncul karena periode, definisi, atau sampel yang berbeda. Periksa konteks sebelum menyimpulkan."
+      },
+      {
+        level: "LEVEL 5 · EVALUASI",
+        question: "AI membuat klaim sebab-akibat berdasarkan survei yang hanya menunjukkan hubungan antara dua hal. Apa evaluasi terbaik?",
+        scenario: "Simulasi: survei menemukan hubungan antara durasi penggunaan aplikasi dan hasil belajar, tetapi tidak menguji sebab-akibat.",
+        options: [
+          "Hubungan tersebut membuktikan aplikasi menyebabkan perubahan hasil belajar",
+          "Kesimpulan sebab-akibat belum terbukti; diperlukan desain penelitian yang sesuai",
+          "Semua hasil survei tidak bisa dipercaya"
+        ],
+        correct: 1,
+        explanation: "Benar! Hubungan antarvariabel tidak otomatis membuktikan sebab-akibat. Desain penelitian dan faktor lain perlu diperiksa."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+    let correctCount = 0;
+
+    const $ = id => document.getElementById(id);
+
+    function render() {
+      answered = false;
+      const item = cases[current];
+      $("level").textContent = item.level;
+      $("question").textContent = item.question;
+      $("scenario").textContent = item.scenario;
+      $("score").textContent = score;
+      $("progress").textContent = current + "/" + cases.length;
+      $("bar").style.width = (current / cases.length * 100) + "%";
+      $("feedback").textContent = "";
+      $("next").classList.add("hidden");
+      $("options").innerHTML = "";
+
+      item.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = String.fromCharCode(65 + index) + ". " + option;
+        button.addEventListener("click", () => choose(index, button));
+        $("options").appendChild(button);
+      });
+    }
+
+    function choose(index, selected) {
+      if (answered) return;
+      answered = true;
+      const item = cases[current];
+      const buttons = $("options").querySelectorAll("button");
+      buttons.forEach((button, i) => {
+        button.disabled = true;
+        if (i === item.correct) button.classList.add("correct");
+      });
+
+      if (index === item.correct) {
+        score += 20;
+        correctCount++;
+        $("feedback").textContent = "✅ Tepat! " + item.explanation;
+      } else {
+        selected.classList.add("wrong");
+        $("feedback").textContent = "Belum tepat. " + item.explanation;
+      }
+
+      $("score").textContent = score;
+      $("progress").textContent = (current + 1) + "/" + cases.length;
+      $("bar").style.width = ((current + 1) / cases.length * 100) + "%";
+      $("next").textContent = current === cases.length - 1 ? "Lihat Hasil" : "Pertanyaan Berikutnya →";
+      $("next").classList.remove("hidden");
+    }
+
+    function finish() {
+      $("quiz").classList.add("hidden");
+      $("result").classList.remove("hidden");
+      $("summary").textContent =
+        "Skor kamu " + score + "/100, dengan " + correctCount +
+        " jawaban benar dari " + cases.length + " pertanyaan. Ini adalah hasil latihan, bukan ukuran pasti kemampuan literasi informasi.";
+    }
+
+    $("next").addEventListener("click", () => {
+      if (current < cases.length - 1) {
+        current++;
+        render();
+      } else {
+        finish();
+      }
+    });
+
+    $("restart").addEventListener("click", () => {
+      current = 0;
+      score = 0;
+      correctCount = 0;
+      $("result").classList.add("hidden");
+      $("quiz").classList.remove("hidden");
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
