@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAIM MATCH | ECOGINI</title>
+<style>
+:root {
+  --green: #176b45;
+  --light: #edf7ef;
+  --ink: #19372a;
+  --muted: #617369;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--ink);
+  background: #f5f8f5;
+  line-height: 1.6;
+}
+nav {
+  background: white;
+  padding: 18px 7%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #dce8df;
+}
+nav a { color: var(--green); text-decoration: none; font-weight: bold; }
+main { max-width: 850px; margin: 35px auto; padding: 0 18px; }
+.tag { color: var(--green); font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+h1 { font-size: clamp(30px, 6vw, 42px); line-height: 1.2; margin: 10px 0; }
+p { color: var(--muted); }
+.card {
+  background: white;
+  border: 1px solid #dce8df;
+  border-radius: 16px;
+  padding: 23px;
+  margin: 20px 0;
+}
+.evidence {
+  background: var(--light);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 16px;
+}
+.options { display: grid; gap: 10px; margin-top: 15px; }
+button {
+  cursor: pointer;
+  border: 1px solid #cbd9ce;
+  background: white;
+  border-radius: 10px;
+  padding: 13px;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+}
+button:hover { border-color: var(--green); }
+button:disabled { cursor: default; opacity: .8; }
+.primary {
+  background: var(--green);
+  color: white;
+  border: none;
+  text-align: center;
+  font-weight: bold;
+}
+.primary:hover { background: #105437; }
+#feedback { display: none; margin-top: 18px; padding: 15px; background: var(--light); border-radius: 10px; }
+#next { display: none; margin-top: 15px; }
+.score { font-weight: bold; color: var(--green); }
+footer { text-align: center; padding: 25px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← ECOGINI</a>
+  <strong>CLAIM MATCH</strong>
+</nav>
+
+<main>
+  <div class="tag">LATIH NALAR KRITIS</div>
+  <h1>Apakah bukti cocok dengan klaim?</h1>
+  <p>Baca klaim dan bukti, lalu tentukan kesimpulan yang paling tepat. Nilai bukan berdasarkan keyakinan, tetapi berdasarkan informasi yang tersedia.</p>
+
+  <section class="card">
+    <p id="progress" class="score">Kasus 1 dari 3</p>
+    <h2 id="caseTitle">Kasus 1: Kebiasaan membaca</h2>
+    <h3>Klaim AI</h3>
+    <p id="claim"></p>
+    <h3>Bukti yang tersedia</h3>
+    <div class="evidence" id="evidence"></div>
+    <p><small id="source"></small></p>
+    <h3>Menurutmu, bagaimana hubungan bukti dengan klaim?</h3>
+    <div class="options" id="options">
+      <button onclick="answer('support')">A. Bukti mendukung seluruh klaim</button>
+      <button onclick="answer('partial')">B. Bukti hanya mendukung sebagian klaim</button>
+      <button onclick="answer('contradict')">C. Bukti bertentangan dengan klaim</button>
+      <button onclick="answer('insufficient')">D. Bukti belum cukup untuk menilai klaim</button>
+    </div>
+    <div id="feedback" aria-live="polite">
+      <h3 id="feedbackTitle"></h3>
+      <p id="feedbackText"></p>
+      <p id="reason"></p>
+    </div>
+    <button id="next" class="primary" onclick="nextCase()">Kasus berikutnya →</button>
+  </section>
+
+  <section class="card" id="final" style="display:none">
+    <h2>Latihan selesai!</h2>
+    <p class="score" id="finalScore"></p>
+    <p id="summary"></p>
+    <button class="primary" onclick="restart()">Ulangi latihan</button>
+  </section>
+</main>
+
+<footer>ECOGINI · Belajar memeriksa bukti sebelum mempercayai klaim</footer>
+
+<script>
+const cases = [
+  {
+    title: "Kasus 1: Kebiasaan membaca",
+    claim: "Membaca selama 20 menit setiap hari pasti meningkatkan nilai akademik semua siswa.",
+    evidence: "Dalam sebuah survei terhadap 120 siswa di satu sekolah, siswa yang lebih sering membaca cenderung memiliki nilai bahasa lebih tinggi. Survei ini tidak menguji semua siswa dan tidak membuktikan bahwa membaca menjadi satu-satunya penyebab nilai tinggi.",
+    source: "Contoh data simulasi untuk latihan, bukan hasil penelitian nyata.",
+    correct: "partial",
+    reason: "Bukti simulasi menunjukkan hubungan pada kelompok tertentu, tetapi tidak membuktikan bahwa membaca pasti meningkatkan nilai semua siswa. Kata 'pasti' dan 'semua' terlalu luas."
+  },
+  {
+    title: "Kasus 2: Penggunaan aplikasi belajar",
+    claim: "Semua siswa yang menggunakan aplikasi belajar memperoleh nilai lebih tinggi daripada siswa yang tidak menggunakannya.",
+    evidence: "Sebuah evaluasi terhadap dua kelas menunjukkan rata-rata nilai kelas yang menggunakan aplikasi lebih tinggi. Namun, kedua kelas memiliki guru dan kemampuan awal yang berbeda.",
+    source: "Contoh data simulasi untuk latihan, bukan hasil penelitian nyata.",
+    correct: "partial",
+    reason: "Perbedaan nilai rata-rata pada dua kelas tidak membuktikan bahwa semua pengguna aplikasi mendapat nilai lebih tinggi. Perbedaan guru dan kemampuan awal juga dapat memengaruhi hasil."
+  },
+  {
+    title: "Kasus 3: Klaim tentang tidur",
+    claim: "Laporan yang diperiksa membuktikan bahwa semua remaja yang tidur 8 jam pasti memiliki nilai sempurna.",
+    evidence: "Laporan tersebut hanya membahas pola tidur dan rasa kantuk pada 40 remaja. Laporan tidak mengukur nilai akademik dan tidak menyatakan bahwa tidur 8 jam menjamin nilai sempurna.",
+    source: "Contoh laporan simulasi untuk latihan, bukan sumber ilmiah nyata.",
+    correct: "insufficient",
+    reason: "Bukti yang tersedia tidak mengukur nilai akademik, sehingga tidak cukup untuk menilai klaim tentang nilai sempurna. Klaim tersebut jauh lebih kuat daripada informasi dalam laporan."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadCase() {
+  const c = cases[current];
+  document.getElementById("progress").textContent =
+    "Kasus " + (current + 1) + " dari " + cases.length + " · Skor: " + score;
+  document.getElementById("caseTitle").textContent = c.title;
+  document.getElementById("claim").textContent = c.claim;
+  document.getElementById("evidence").textContent = c.evidence;
+  document.getElementById("source").textContent = c.source;
+  document.getElementById("feedback").style.display = "none";
+  document.getElementById("next").style.display = "none";
+  document.getElementById("options").style.display = "grid";
+  document.querySelectorAll("#options button").forEach(b => b.disabled = false);
+  answered = false;
+}
+
+function answer(choice) {
+  if (answered) return;
+  answered = true;
+  const c = cases[current];
+  const correct = choice === c.correct;
+  if (correct) score++;
+
+  document.getElementById("feedbackTitle").textContent =
+    correct ? "Tepat! +1 poin" : "Belum tepat";
+  document.getElementById("feedbackText").textContent =
+    correct ? "Kamu memilih hubungan bukti dan klaim yang paling sesuai." :
+    "Jawaban yang paling sesuai: " + {
+      support: "bukti mendukung seluruh klaim",
+      partial: "bukti hanya mendukung sebagian klaim",
+      contradict: "bukti bertentangan dengan klaim",
+      insufficient: "bukti belum cukup untuk menilai klaim"
+    }[c.correct] + ".";
+  document.getElementById("reason").textContent = "Pembahasan: " + c.reason;
+  document.getElementById("feedback").style.display = "block";
+  document.getElementById("progress").textContent =
+    "Kasus " + (current + 1) + " dari " + cases.length + " · Skor: " + score;
+  document.querySelectorAll("#options button").forEach(b => b.disabled = true);
+
+  const next = document.getElementById("next");
+  next.style.display = "block";
+  next.textContent = current === cases.length - 1 ? "Lihat hasil →" : "Kasus berikutnya →";
+}
+
+function nextCase() {
+  if (current < cases.length - 1) {
+    current++;
+    loadCase();
+  } else {
+    document.getElementById("final").style.display = "block";
+    document.getElementById("finalScore").textContent =
+      "Skor kamu: " + score + " dari " + cases.length;
+    document.getElementById("summary").textContent =
+      score === cases.length
+      ? "Hebat! Kamu berhasil mengidentifikasi hubungan bukti dan klaim pada semua kasus."
+      : "Pelajari kembali pembahasan tiap kasus. Ingat, bukti yang terbatas tidak boleh digunakan untuk membenarkan klaim yang terlalu luas.";
+    document.getElementById("next").style.display = "none";
+    document.getElementById("options").style.display = "none";
+    document.getElementById("feedback").style.display = "none";
+    document.getElementById("final").scrollIntoView({behavior:"smooth"});
+  }
+}
+
+function restart() {
+  current = 0;
+  score = 0;
+  document.getElementById("final").style.display = "none";
+  document.getElementById("options").style.display = "grid";
+  loadCase();
+}
+
+loadCase();
+</script>
+</body>
+</html>
