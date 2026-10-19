@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECO CHECK | ECOGINI</title>
+<style>
+:root {
+  --green: #176b45;
+  --light: #edf7ef;
+  --ink: #19372a;
+  --muted: #617369;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f8f5;
+  color: var(--ink);
+  line-height: 1.6;
+}
+nav {
+  padding: 18px 7%;
+  background: white;
+  border-bottom: 1px solid #dce8df;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav a { color: var(--green); text-decoration: none; font-weight: bold; }
+main { max-width: 850px; margin: 35px auto; padding: 0 18px; }
+.hero { margin-bottom: 25px; }
+.tag {
+  color: var(--green);
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+h1 { font-size: clamp(30px, 6vw, 43px); line-height: 1.15; margin: 10px 0; }
+p { color: var(--muted); }
+.card {
+  background: white;
+  border: 1px solid #dce8df;
+  border-radius: 17px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px #19372a08;
+}
+label { display: block; font-weight: bold; margin: 17px 0 7px; }
+textarea, input, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd9ce;
+  border-radius: 9px;
+  font: inherit;
+  background: white;
+}
+textarea { min-height: 95px; resize: vertical; }
+small { color: var(--muted); }
+button {
+  background: var(--green);
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 18px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+button:hover { background: #105437; }
+.actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.secondary { background: #e7f1e9; color: var(--green); }
+#result { display: none; }
+.status {
+  padding: 12px;
+  border-radius: 9px;
+  background: var(--light);
+  font-weight: bold;
+  margin: 12px 0;
+}
+footer { text-align: center; padding: 25px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← ECOGINI</a>
+  <strong>ECO CHECK</strong>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="tag">CEK BUKTINYA, BUKAN CUMA SUMBERNYA</div>
+    <h1>Apakah klaim AI benar-benar didukung bukti?</h1>
+    <p>Periksa hubungan antara klaim, sumber, dan bukti secara sistematis. ECO CHECK membantu proses evaluasi, bukan menjamin kebenaran secara otomatis.</p>
+  </section>
+
+  <section class="card">
+    <h2>01. Masukkan informasi</h2>
+    <label for="claim">Klaim dari AI</label>
+    <textarea id="claim" placeholder="Tuliskan klaim yang ingin kamu periksa..."></textarea>
+
+    <label for="source">Nama atau tautan sumber</label>
+    <input id="source" placeholder="Contoh: laporan penelitian, situs resmi, atau URL">
+
+    <label for="date">Tanggal terbit sumber (jika diketahui)</label>
+    <input id="date" placeholder="Contoh: 12 Agustus 2026">
+
+    <label for="evidence">Bukti atau kutipan yang relevan</label>
+    <textarea id="evidence" placeholder="Salin bagian sumber yang berkaitan dengan klaim..."></textarea>
+
+    <label for="relation">Seberapa sesuai bukti dengan klaim?</label>
+    <select id="relation">
+      <option value="">Pilih penilaian awal</option>
+      <option value="support">Bukti secara langsung mendukung klaim</option>
+      <option value="partial">Bukti hanya mendukung sebagian klaim</option>
+      <option value="contradict">Bukti bertentangan dengan klaim</option>
+      <option value="unclear">Belum jelas atau tidak ada bukti yang relevan</option>
+    </select>
+
+    <label for="credibility">Apakah identitas dan kredibilitas sumber sudah diperiksa?</label>
+    <select id="credibility">
+      <option value="">Pilih status pemeriksaan</option>
+      <option value="verified">Sudah diperiksa melalui informasi penerbit dan sumber asli</option>
+      <option value="unverified">Belum diperiksa atau belum dapat dipastikan</option>
+    </select>
+
+    <div class="actions">
+      <button onclick="checkClaim()">Evaluasi isian</button>
+      <button class="secondary" onclick="resetForm()">Reset</button>
+    </div>
+    <small>Catatan: penilaian hubungan bukti dan klaim merupakan input pengguna, bukan hasil verifikasi otomatis oleh internet.</small>
+  </section>
+
+  <section class="card" id="result" aria-live="polite">
+    <h2>02. Hasil pemeriksaan awal</h2>
+    <div class="status" id="status"></div>
+    <p id="explanation"></p>
+    <h3>Hal yang perlu kamu lakukan</h3>
+    <ul id="steps"></ul>
+    <p><strong>Ingat:</strong> hasil ini hanya berdasarkan isianmu. Periksa sumber asli sebelum menyimpulkan bahwa klaim benar atau salah.</p>
+  </section>
+</main>
+
+<footer>ECOGINI · Literasi AI dan verifikasi bukti</footer>
+
+<script>
+function checkClaim() {
+  const claim = document.getElementById("claim").value.trim();
+  const source = document.getElementById("source").value.trim();
+  const evidence = document.getElementById("evidence").value.trim();
+  const relation = document.getElementById("relation").value;
+  const credibility = document.getElementById("credibility").value;
+
+  if (!claim || !source || !evidence || !relation || !credibility) {
+    alert("Lengkapi klaim, sumber, bukti, dan kedua penilaian terlebih dahulu.");
+    return;
+  }
+
+  let status = "";
+  let explanation = "";
+  let steps = [];
+
+  if (credibility === "unverified") {
+    status = "SUMBER BELUM TERVERIFIKASI";
+    explanation = "Identitas atau kredibilitas sumber belum dipastikan. Hubungan bukti dengan klaim belum cukup untuk menetapkan kebenarannya.";
+    steps = [
+      "Cari sumber asli dan nama penerbit atau penulis.",
+      "Periksa tanggal terbit, konteks, dan apakah sumber dapat diakses.",
+      "Setelah itu, nilai kembali hubungan bukti dengan klaim."
+    ];
+  } else if (relation === "support") {
+    status = "BUKTI DINILAI MENDUKUNG";
+    explanation = "Menurut penilaian awalmu, bukti mendukung klaim. Ini belum otomatis membuktikan seluruh klaim benar.";
+    steps = [
+      "Pastikan kutipan sesuai dengan isi sumber asli.",
+      "Periksa metode, konteks, tanggal, dan batasan bukti.",
+      "Cari sumber independen lain untuk menguatkan kesimpulan."
+    ];
+  } else if (relation === "partial") {
+    status = "BUKTI HANYA MENDUKUNG SEBAGIAN";
+    explanation = "Sebagian klaim mungkin didukung, tetapi ada bagian yang belum terbukti atau terlalu luas.";
+    steps = [
+      "Pisahkan klaim menjadi beberapa pernyataan yang lebih spesifik.",
+      "Tandai bagian yang benar-benar didukung dan bagian yang belum didukung.",
+      "Cari bukti tambahan untuk bagian yang masih lemah."
+    ];
+  } else if (relation === "contradict") {
+    status = "TERDAPAT BUKTI YANG BERTENTANGAN";
+    explanation = "Bukti yang kamu pilih tampak bertentangan dengan klaim. Periksa konteks dan kemungkinan perbedaan waktu atau definisi.";
+    steps = [
+      "Baca konteks lengkap sumber asli.",
+      "Bandingkan tanggal, populasi, definisi, dan metode yang digunakan.",
+      "Cari sumber lain sebelum mengambil kesimpulan."
+    ];
+  } else {
+    status = "BELUM CUKUP BUKTI";
+    explanation = "Bukti yang tersedia belum menunjukkan secara jelas apakah klaim didukung atau bertentangan.";
+    steps = [
+      "Cari bukti yang secara langsung membahas klaim.",
+      "Hindari menganggap sumber yang sekadar menyebut topik sebagai bukti pendukung.",
+      "Tunda kesimpulan sampai bukti yang relevan ditemukan."
+    ];
+  }
+
+  document.getElementById("status").textContent = status;
+  document.getElementById("explanation").textContent = explanation;
+
+  const list = document.getElementById("steps");
+  list.replaceChildren();
+  steps.forEach(function(step) {
+    const li = document.createElement("li");
+    li.textContent = step;
+    list.appendChild(li);
+  });
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetForm() {
+  document.getElementById("claim").value = "";
+  document.getElementById("source").value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("evidence").value = "";
+  document.getElementById("relation").value = "";
+  document.getElementById("credibility").value = "";
+  document.getElementById("result").style.display = "none";
+}
+</script>
+</body>
+</html>
