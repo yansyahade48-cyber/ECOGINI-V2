@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f8f1">
+  <meta name="description" content="ECOGINI membantu pelajar mengevaluasi klaim AI melalui pemeriksaan sumber dan bukti.">
+  <title>ECOGINI — Berpikir Kritis di Era AI</title>
+  <style>
+    :root {
+      --green: #176b45;
+      --green-dark: #104b32;
+      --lime: #d7f36a;
+      --bg: #f4f8f1;
+      --text: #1c3025;
+      --muted: #65766b;
+      --white: #ffffff;
+      --line: #dfe8dc;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1100px, 90%);
+      margin: auto;
+    }
+
+    header {
+      background: rgba(244, 248, 241, .96);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--green);
+    }
+
+    .brand span { color: #91ad26; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: .92rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+
+    .hero { padding: 86px 0 70px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: #e5efcf;
+      color: var(--green-dark);
+      border-radius: 30px;
+      padding: 7px 13px;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: clamp(2.7rem, 6vw, 4.7rem);
+      letter-spacing: -3px;
+      line-height: 1.05;
+    }
+
+    h1 span { color: var(--green); }
+
+    .hero p {
+      max-width: 570px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 19px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--green-dark); }
+
+    .btn-secondary {
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .visual {
+      background: var(--green);
+      color: white;
+      padding: 28px;
+      border-radius: 28px;
+      box-shadow: 0 20px 50px #173f2420;
+      transform: rotate(1deg);
+    }
+
+    .visual-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border-radius: 50%;
+      background: var(--lime);
+      margin-right: 7px;
+    }
+
+    .sample {
+      background: #ffffff12;
+      border: 1px solid #ffffff30;
+      padding: 18px;
+      border-radius: 16px;
+      margin-top: 12px;
+    }
+
+    .sample small {
+      display: block;
+      color: #d7e7d8;
+      margin-bottom: 5px;
+    }
+
+    .sample strong { font-size: 1.02rem; }
+
+    .section { padding: 72px 0; }
+
+    .section-white { background: white; }
+
+    .section-heading {
+      max-width: 680px;
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2 {
+      margin: 8px 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -1.3px;
+      line-height: 1.15;
+    }
+
+    .section-heading p { color: var(--muted); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 20px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #eaf2dc;
+      font-size: 1.5rem;
+    }
+
+    .card h3 { margin: 18px 0 8px; }
+
+    .card p {
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .card a {
+      display: inline-block;
+      color: var(--green);
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step-number {
+      color: var(--green);
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .step p { color: var(--muted); }
+
+    .notice {
+      padding: 20px;
+      border-radius: 14px;
+      background: #f0f5e7;
+      border: 1px solid var(--line);
+      color: var(--green-dark);
+      font-size: .94rem;
+    }
+
+    footer {
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .hero { padding-top: 55px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .cards, .steps { grid-template-columns: 1fr; }
+      .nav-links { gap: 12px; font-size: .8rem; }
+      .brand { font-size: 1.25rem; }
+      h1 { letter-spacing: -2px; }
+    }
+
+    @media (max-width: 420px) {
+      nav { align-items: flex-start; padding: 15px 0; }
+      .nav-links { flex-wrap: wrap; justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="container">
+    <a class="brand" href="#beranda">ECO<span>GINI</span></a>
+    <div class="nav-links">
+      <a href="#tentang">Tentang</a>
+      <a href="#fitur">Fitur</a>
+      <a href="#alur">Cara kerja</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" id="beranda">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">LITERASI AI • BERPIKIR KRITIS</span>
+        <h1>Jangan cuma percaya. <span>Periksa buktinya.</span></h1>
+        <p>
+          ECOGINI membantu pelajar menilai informasi dari AI dengan
+          memeriksa sumber, mencocokkan bukti, dan mempertanyakan
+          kesimpulan sebelum mempercayainya.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#fitur">Mulai eksplorasi ↗</a>
+          <a class="btn btn-secondary" href="#alur">Pelajari cara kerja</a>
+        </div>
+      </div>
+
+      <div class="visual">
+        <div class="visual-top">
+          <span>ECOGINI CHECK</span>
+          <span><i class="dot"></i>Mode belajar</span>
+        </div>
+        <div class="sample">
+          <small>PERTANYAAN UTAMA</small>
+          <strong>Apakah sumber ini benar-benar mendukung klaim AI?</strong>
+        </div>
+        <div class="sample">
+          <small>LANGKAH 01</small>
+          <strong>Periksa identitas sumber</strong>
+        </div>
+        <div class="sample">
+          <small>LANGKAH 02</small>
+          <strong>Bandingkan klaim dengan bukti</strong>
+        </div>
+        <div class="sample">
+          <small>LANGKAH 03</small>
+          <strong>Tentukan kesimpulan yang beralasan</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white" id="tentang">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">MENGAPA ECOGINI?</span>
+        <h2>Sumber ada belum tentu klaimnya benar.</h2>
+        <p>
+          Jawaban AI dapat mencantumkan sumber yang tampak meyakinkan.
+          Namun, sumber itu masih perlu diperiksa untuk memastikan
+          keberadaan, relevansi, dan kecocokannya dengan klaim.
+        </p>
+      </div>
+      <div class="notice">
+        ECOGINI merupakan alat bantu pembelajaran. Hasil pemeriksaan
+        bergantung pada bukti yang diperiksa dan tidak menjamin
+        seluruh informasi benar secara otomatis.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="fitur">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">FITUR UTAMA</span>
+        <h2>Tiga cara melatih nalar kritis.</h2>
+        <p>
+          Setiap fitur punya fungsi berbeda, tetapi saling melengkapi
+          dalam proses evaluasi informasi dari AI.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon">🔎</div>
+          <h3>ECO CHECK</h3>
+          <p>
+            Periksa identitas sumber, tanggal, kutipan bukti,
+            dan kesesuaian klaim.
+          </p>
+          <a href="#alur">Pelajari alurnya →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">⚖️</div>
+          <h3>CLAIM MATCH</h3>
+          <p>
+            Latih kemampuan membandingkan klaim AI dengan bukti
+            yang tersedia dalam sebuah kasus.
+          </p>
+          <a href="#alur">Pelajari alurnya →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🧠</div>
+          <h3>ECO LAB</h3>
+          <p>
+            Berlatih melalui kasus interaktif dan pahami alasan
+            di balik setiap jawaban.
+          </p>
+          <a href="#alur">Pelajari alurnya →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white" id="alur">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">ALUR VERIFIKASI</span>
+        <h2>Periksa sebelum menyimpulkan.</h2>
+        <p>
+          Gunakan proses yang sistematis, bukan hanya mengandalkan
+          kesan bahwa jawaban AI terdengar meyakinkan.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3>Periksa sumber</h3>
+          <p>
+            Telusuri apakah sumber dapat ditemukan dan identitasnya
+            sesuai dengan informasi yang dicantumkan.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3>Uji kecocokan</h3>
+          <p>
+            Bandingkan klaim dengan isi sumber. Perhatikan konteks,
+            jenis bukti, dan batasan penelitian.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3>Tarik kesimpulan</h3>
+          <p>
+            Tentukan apa yang didukung bukti, apa yang bertentangan,
+            dan apa yang belum bisa dipastikan.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <strong>ECOGINI — Literasi AI dan Verifikasi Bukti</strong>
+    <span>Prototipe edukasi untuk pengembangan dan pengujian.</span>
+  </div>
+</footer>
+
+</body>
+</html>
